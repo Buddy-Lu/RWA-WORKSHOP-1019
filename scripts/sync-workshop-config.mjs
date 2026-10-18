@@ -1,0 +1,13 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const source=JSON.parse(fs.readFileSync(path.join(root,'onchain/deployed.json'),'utf8'));
+if(source.chainId!==11155111 || source.network!=='sepolia') throw new Error('課堂前端只支援 Sepolia，請使用 Sepolia 部署輸出');
+const valid=a=>/^0x[0-9a-fA-F]{40}$/.test(a);
+if(!valid(source.contracts?.twd?.address)) throw new Error('缺少有效 TWD 地址');
+const stocks=source.stocks.filter(s=>['2330','2317'].includes(s.code)).map(s=>({code:s.code,symbol:s.tokenSymbol,address:s.token}));
+if(stocks.length!==2 || stocks.some(s=>!valid(s.address))) throw new Error('部署輸出需包含2330、2317的有效地址');
+const cfg={chainId:source.chainId,twd:source.contracts.twd.address,stocks,source:'onchain/deployed.json；使用前須確認鏈上價格、狀態與測試資金'};
+fs.writeFileSync(path.join(root,'workshop/frontend/config.js'),'// 課堂 Sepolia 部署設定\nwindow.COURSE = '+JSON.stringify(cfg,null,2)+';\n');
+console.log('已同步兩檔股票與 TWD 地址；未送出交易，未驗證鏈上狀態。');

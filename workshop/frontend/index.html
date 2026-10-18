@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-Hant">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RWA 課堂操作</title>
+<style>
+*{box-sizing:border-box}body{background:#090909;color:#f4f4f4;font:18px system-ui,sans-serif;max-width:1000px;margin:50px auto;padding:0 24px}h1{font-size:44px;letter-spacing:-1px}h2{font-size:26px;margin-top:45px}p{color:#bbb;line-height:1.7}label{display:block;margin:16px 0 7px}input,select,button{font:inherit;padding:12px;border:1px solid #555;background:#151515;color:#fff;border-radius:4px}input,select{width:100%}button{cursor:pointer;margin:12px 8px 0 0;background:#eee;color:#111}button:disabled{opacity:.45;cursor:wait}output,pre{display:block;white-space:pre-wrap;overflow-wrap:anywhere;color:#ddd;line-height:1.7}a{color:white}.row{display:flex;gap:16px}.row>div{flex:1}
+</style>
+<h1>RWA 課堂操作</h1>
+<p>Sepolia 教學用。股票合約預設取自本機部署快照，請講師課前核對地址、行情與流動性。</p>
+<button id="connect">連接錢包</button><button id="switch">切換 Sepolia</button>
+<output id="account">尚未連線</output>
+<h2>01 自己發行的 ERC-20</h2>
+<label for="classAddress">ClassToken 合約地址（貼上 Remix 部署結果）</label>
+<input id="classAddress" placeholder="0x…" autocomplete="off">
+<button id="readClass">讀取代幣與餘額</button><output id="classResult"></output>
+<div class="row"><div><label for="recipient">收款地址</label><input id="recipient" placeholder="同學的公開地址"></div><div><label for="classAmount">轉帳數量</label><input id="classAmount" value="10" inputmode="decimal"></div></div>
+<button id="transferClass">轉出課程代幣</button>
+<h2>02 台股代幣與 TWD</h2>
+<label for="stock">股票合約</label><select id="stock"></select>
+<button id="readStock">讀取價格、餘額與授權</button><output id="stockResult"></output>
+<label for="faucetAmount">領取測試 TWD（整數 TWD）</label><input id="faucetAmount" value="5000" inputmode="numeric"><button id="faucet">領測試 TWD</button>
+<label for="twdAmount">買入付款金額（TWD）</label><input id="twdAmount" value="1000" inputmode="decimal">
+<button id="approve">步驟 1：授權此金額</button><button id="mint">步驟 2：買入鑄造</button>
+<label for="redeemAmount">贖回數量（股代幣）</label><input id="redeemAmount" value="1" inputmode="decimal"><button id="redeem">贖回代幣</button>
+<h2>交易與執行狀態</h2><output id="status" aria-live="polite">等候操作</output><a id="txLink" target="_blank" rel="noopener noreferrer"></a>
+<script src="vendor/ethers.umd.min.js"></script><script src="config.js"></script><script src="app.js"></script>
+</html>
