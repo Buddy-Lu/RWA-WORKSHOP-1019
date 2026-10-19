@@ -1,71 +1,277 @@
-# 完整網站資料包
+# 從本機網站到自己的台股代幣平台：完整操作手冊
 
-解壓縮後先雙擊根目錄的 **START-HERE.html**，可直接在瀏覽器閱讀，不需要啟動伺服器。
+你已經能開啟本機網站，請從第 2 節開始。所有指令以 Windows PowerShell 為例；這份手冊只用 Sepolia 測試網。
 
-Windows：安裝 Node.js 24 → `01-install.cmd` → `02-start.cmd` → `03-build.cmd` → 依指南部署到 Vercel。
+## 1. 先分清楚三件事
 
-macOS/Linux：在根目錄依序執行 `node scripts/student-start.cjs install`、`node scripts/student-start.cjs start`；另開終端機執行 `node scripts/student-start.cjs build`。
+| 目標 | 要做什麼 | 是否需要私鑰 |
+|---|---|---|
+| 修改網站、放上 Vercel | 啟動 frontend、修改畫面、部署網站 | 不需要 |
+| 在網站轉帳或買入 | MetaMask 連接 Sepolia、確認交易 | 不把私鑰交給程式 |
+| 建立自己的整套合約、餵價與清算 | 設定 onchain/.env，執行 Node.js 腳本 | 需要專用測試錢包私鑰，只留本機 |
 
-## 這包包含什麼
+下載後的完整網站已連接教材內的公開合約地址；不是空白頁，但你沒有那些合約的管理權限。開啟網站不會自動部署新幣，也不會啟動 feeder 或 keeper。
 
-- 完整 React 網站、Vercel 行情 API、部署設定。
-- Solidity 合約、部署腳本、feeder、keeper、合約測試。
-- Remix 發幣範例、課堂操作步驟與完整教學文件。
-- 公開 Sepolia 地址與 ABI；不包含私鑰、實際 .env、node_modules 或 .git。
+如果你只想先發一個有自己名字的 ERC-20，先做 [Remix 發幣教學](../workshop/steps/02-token.md)。ClassToken 不會自動加入完整台股網站；下面部署的是整套台股平台。
 
-## 兩種使用方式
+## 2. 資料夾在哪裡？終端機在哪裡開？
 
-1. **先做出同款網站**：依首頁三個啟動檔操作，使用原有公開合約地址。你能修改介面，無法取得老師的管理權限。共用合約的價格、餘額、IPO 狀態可能改變，不能保證下載後所有交易都成功。
-2. **建立自己的完整環境**：自行部署合約，使用自己的測試錢包，另外執行 feeder／keeper。以下步驟會送 Sepolia 交易並消耗測試 ETH，請完成基本操作後再做。
-
-## 進階：自己的合約與鏈下服務
-
-在根目錄開終端機：
+先完整解壓縮 ZIP。打開能看到以下內容的資料夾，這就是「專案根目錄」：
 
 ```text
-cd onchain
-npm ci
-npm test
+RWA-WORKSHOP-1019/
+  START-HERE.html           快速啟動指南
+  MANUAL.html               本手冊的瀏覽器版本
+  01-install.cmd            安裝完整網站依賴
+  02-start.cmd              啟動完整網站
+  03-build.cmd              建置完整網站
+  frontend/                 完整網站與行情 API
+    src/deployed.json       網站使用的公開合約地址與 ABI
+    .env.example            網站選配設定範例
+  onchain/                  智能合約與鏈下腳本
+    .env.example            部署／餵價設定範例
+    deployed.json           部署結果與 ABI
+    scripts/                deploy、feeder、keeper 等
+  workshop/                 課堂 Remix 範例與精簡網頁
+  docs/                     教材與檢查報告
 ```
 
-將 `onchain/.env.example` 複製為同資料夾的 `.env`。在本機編輯填入自己的 Sepolia 測試錢包 PRIVATE_KEY 與 RPC URL。私鑰不可提交到 GitHub，也不可放進前端或 Vercel 的 VITE_ 變數。
+在檔案總管打開 onchain 資料夾，點上方「網址列」（不是搜尋框），輸入 powershell，按 Enter。新視窗提示字尾應為 onchain>。
 
-確認測試錢包有 Sepolia ETH，再於 `onchain` 執行：
+下面標「在 onchain 執行」的指令都在這個視窗輸入。一行執行完再輸入下一行，不要把說明文字一起貼進去。
 
-```text
+若你已在根目錄的終端機，執行 cd onchain 即可；若已在 onchain 裡，就不要再輸入一次。
+
+## 3. 建立專用測試錢包
+
+使用專門做課程的測試錢包，切換 Sepolia，確認公開地址。準備 Sepolia 測試 ETH，部署要付多筆交易的 gas；不足時腳本會中斷。
+
+從錢包的帳戶管理／匯出私鑰功能取得「這個測試帳戶」的私鑰，在自己的電腦填入下一節的 .env。錢包版本的選單可能不同，請依錢包內說明操作。
+
+公開地址用來收款；私鑰用來簽交易；助記詞是另一種復原資料。PRIVATE_KEY 欄位不能填公開地址，也不能填 12／24 個助記詞。不要把私鑰貼到聊天、截圖、GitHub 或網站欄位。
+
+## 4. 建立 onchain/.env：最重要的一步
+
+在 onchain 終端機執行以下指令。已存在 .env 時不會覆蓋：
+
+```powershell
+if (!(Test-Path -LiteralPath .env)) { Copy-Item -LiteralPath .env.example -Destination .env }
+notepad .env
+```
+
+記事本會開啟設定檔。改成下面格式，再把 PRIVATE_KEY 的中文佔位文字換成自己的測試私鑰，儲存後關閉記事本：
+
+```dotenv
+SEPOLIA_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
+PRIVATE_KEY=換成你的專用Sepolia測試錢包私鑰
+ORACLE_ADDRESS=
+FEED_INTERVAL_MS=60000
+EXTRA_CODES=
+ETHERSCAN_API_KEY=
+```
+
+| 欄位 | 怎麼填 |
+|---|---|
+| SEPOLIA_RPC_URL | 可先使用上面的公開節點。原範例中的「你的KEY」不可原樣保留；自有 RPC 則填完整 URL |
+| PRIVATE_KEY | 一般為 0x 加 64 個十六進位字元；不是 0x 加 40 位的公開地址。請保留錢包匯出的正確內容 |
+| ORACLE_ADDRESS | 首次部署前留空；部署成功後，從新 deployed.json 填入 Oracle 地址 |
+| FEED_INTERVAL_MS | 60000 表示每 60 秒；先保留預設值 |
+| EXTRA_CODES | 先留空；這是追加餵價標的，不會自動建立新代幣或新增網站頁面 |
+| ETHERSCAN_API_KEY | 先留空；合約原碼驗證是另外的步驟，部署本身不用填 |
+
+檔名必須剛好是 .env，不是 .env.txt。在終端機輸入以下指令只檢查檔名，不會列出私鑰內容：
+
+```powershell
+Get-Item -LiteralPath .env | Select-Object Name
+```
+
+onchain/.env 給部署／feeder／keeper 使用；frontend/.env 是另一份選配網站設定。不要把兩者混在一起。程式啟動時讀取設定，修改後要停止並重開相關腳本。
+
+## 5. 安裝合約工具並部署
+
+在 onchain 終端機逐行執行：
+
+```powershell
+npm ci
+npm test
 npm run deploy:sepolia
 ```
 
-這會建立合約、逐筆建立多檔股票、準備測試流動性與 IPO，需要多筆交易。等待整段成功；若中途失敗先檢查錯誤，重新執行會建立另一套合約。成功後腳本會更新 `onchain/deployed.json` 與 `frontend/src/deployed.json`，所以網站會指向你自己的地址。提交這兩份公開地址設定，重新部署 Vercel。
+若 PowerShell 顯示 npm.ps1 無法載入，可將 npm 改為 npm.cmd，例如 npm.cmd ci；不用修改電腦的執行原則。
 
-把新 `onchain/deployed.json` 的 `contracts.oracle.address` 填入本機 `.env` 的 ORACLE_ADDRESS。部署者有初始餵價權限；若使用另一個 feeder 帳戶，需先由管理者授權。仍在 `onchain` 中執行：
+npm ci 安裝鎖定的依賴；npm test 執行本機測試，不會發送 Sepolia 交易。測試含已知限制的重現案例，通過不代表所有限制已修好。
 
-```text
+最後一行會使用 .env 中的私鑰自動簽署多筆測試網交易，不會逐筆跳出 MetaMask。它會：
+
+1. 建立 TWD、PriceOracle、StockFactory、LendingPool、StockIPO。
+2. 寫入初始價格，再依 stocks.js 逐筆建立各檔 StockToken。
+3. 設定借貸抵押品、測試流動性與一檔 IPO。
+4. 最後寫出 onchain/deployed.json 與 frontend/src/deployed.json。
+
+初始報價若抓取失敗，部署程式可能使用寫死的後備價格；部署成功不等於已取得即時行情，還要做下一節的餵價確認。
+
+看到最後「已寫入 deployed.json」且沒有失敗訊息，才算這次部署完成。保留公開合約地址與交易 hash。中途失敗時先查錯誤；已成功的鏈上交易不會撤回，而重新執行會建立另一套合約。
+
+不要把整個終端機畫面和 .env 一起截圖分享。需要求助時只提供錯誤訊息與公開交易 hash。
+
+## 6. 填入新 Oracle 地址，啟動 feeder
+
+部署成功後，在 onchain 終端機輸入：
+
+```powershell
+node -e "console.log(require('./deployed.json').contracts.oracle.address)"
+notepad .env
+```
+
+第一行只印出公開 Oracle 地址。把它填到 .env 的 ORACLE_ADDRESS= 後面，儲存。不是填自己的錢包地址，也不是股票代幣地址。
+
+仍在 onchain 執行：
+
+```powershell
 npm run feed:sepolia
 ```
 
-保持終端機執行。預設每 60 秒抓 TWSE 並寫入鏈上；RPC、外部行情與 gas 都會影響成功率。鏈上更新時間不等於原始行情時間，請留意後備價格。
+預期會出現「餵價 N 檔」、「tx 0x...」以及更新間隔。每輪抓 TWSE MIS 報價，缺值時使用後備日資料，再呼叫 Oracle.updatePrices 寫入鏈上。寫入會消耗 feeder 錢包的 Sepolia ETH。
 
-Keeper 是選配的借貸清算示範。另開終端機，進入 `onchain`，使用有測試 ETH 與測試 TWD 的測試帳戶，再執行：
+第一次先沿用部署者私鑰：PriceOracle 建立時已授權部署者餵價。若更換帳戶，Oracle owner 要先呼叫 setFeeder(新帳戶公開地址, true)；只換 .env 私鑰不會取得權限。
 
-```text
+這個視窗要持續開著；Ctrl+C、關閉視窗或電腦休眠，都可能使餵價停止。掛在 Vercel 上的網站不會替你執行這支常駐腳本。
+
+## 7. 怎麼確定真的在餵價？
+
+保留 feeder 視窗，再開第二個 onchain 終端機，執行：
+
+```powershell
+node --require dotenv/config scripts/preflight.js
+```
+
+此指令只讀取鏈上狀態，不送交易；加上 dotenv/config 是為了讓它讀到你 .env 的 RPC 設定。preflight 本身不使用私鑰。
+
+| 輸出欄位 | 應該怎麼看 |
+|---|---|
+| chainId | 應為 11155111，即 Sepolia |
+| oracle | 應和剛部署的 Oracle 地址相同 |
+| owner | 應是部署帳戶的公開地址 |
+| ownerIsFeeder | 使用部署者餵價時應為 true；不代表其他帳戶也有權限 |
+| code | 這支檢查工具只檢查 2330、2317，不是全股票掃描 |
+| lastSubmittedAt | 最近一次寫入鏈上的時間；ISO 格式 Z 是 UTC，台灣時間加 8 小時 |
+| stale | false 表示未超過合約容許時間；還要看寫入時間是否真的持續前進 |
+| paused | 一般操作應為 false |
+| actualTWD | 合約實際持有的 TWD，不能因為價格上漲就假設儲備也增加 |
+
+等 feeder 完成下一輪，再執行同一個檢查，確認 lastSubmittedAt 前進。複製 feeder 的 tx hash 到 Sepolia Etherscan，確認交易成功且目的地址是你的 Oracle。
+
+注意兩點：網站行情更新不代表 Oracle 更新；lastSubmittedAt 也只是「上鏈時間」，不是 TWSE 原始行情時間。舊報價再次上鏈仍會更新時間，所以要同時看 feeder 是否用了後備價格。只看到 stale=false 不能證明即時報價品質。
+
+## 8. 讓網站使用你的幣，做一次買入
+
+部署腳本已經自動更新 frontend/src/deployed.json。關閉原本網站終端機（Ctrl+C），再雙擊 02-start.cmd，重新整理瀏覽器。
+
+1. 連接 MetaMask，確認 Sepolia 和你想測試的帳戶。
+2. 在穩定幣頁領取測試 TWD；這是 demo 水龍頭，領到的不是現金。
+3. 進交易頁，先選一檔，第一次用整數 1 股測試。現有完整前端有小數股輸入限制，先不要用 0.5。
+4. 點買入後，依序確認 TWD 授權與買入交易；授權不等於已扣款。
+5. 以交易成功收據、TWD 與股票代幣餘額核對結果。報價可能在兩筆交易之間改變，實際取得數量以鏈上為準，不只看成功提示。
+
+新代幣不一定自動顯示在 MetaMask。可從 deployed.json 的 stocks 中找到對應 token 地址，再用錢包匯入自訂代幣；不要拿自己的帳戶地址當 token 地址。
+
+若要讓課堂精簡網頁也換成你的合約，在「根目錄」執行：
+
+```powershell
+node scripts/sync-workshop-config.mjs
+```
+
+它只同步精簡網頁的 TWD 與兩檔股票設定；完整網站已由部署腳本更新。
+
+## 9. Keeper：選配，先不用急著開
+
+Keeper 不是餵價程式。它會找借款人、檢查健康因子，低於 1 時嘗試清算。沒有借款人或沒有不健康借款時，沒有清算交易是正常的。
+
+需要示範借貸清算時，另開一個 onchain 終端機，確認 .env 對應帳戶有測試 ETH 與測試 TWD，再執行：
+
+```powershell
 npm run keeper:sepolia
 ```
 
-它讀取 `deployed.json` 的借貸合約地址，預設每 30 秒查健康因子，符合條件就發送授權與清算交易。它不是只有查詢，執行會動用該帳戶資金。腳本共用 `.env` 的 PRIVATE_KEY；想分開帳戶，需使用分離的執行環境。已知清算與輪詢限制見 [檢查報告](FINAL_REVIEW_1019.md)。
+預設每 30 秒檢查一次，讀 onchain/deployed.json 的 LendingPool／TWD 地址。若 .env 曾設定 LENDING_ADDRESS 或 TWD_ADDRESS，會優先覆蓋 JSON；第一次使用不要額外設定這兩欄。
 
-若也要讓課堂精簡網頁使用新合約，在根目錄執行 `node scripts/sync-workshop-config.mjs`。
+這支程式會用該帳戶的 TWD 代償並取得抵押品，是真正送交易，不是唯讀監控。它與 feeder 共用 PRIVATE_KEY；分帳戶執行需分開設定執行環境。現有掃描範圍與清算金額仍有已知限制，見 docs/FINAL_REVIEW_1019.md。
 
-## 出問題時
+## 10. 部署到你自己的 Vercel
 
-| 現象 | 下一步 |
+先雙擊 03-build.cmd，確認出現 Build passed。網站建置成功不代表鏈上服務已啟動。
+
+### 方式 A：GitHub 副本連接 Vercel
+
+1. 在課程 GitHub 按 Fork，建立自己的副本。
+2. 把本機改過的 frontend/src/deployed.json 和 onchain/deployed.json 更新到「自己的副本」。可在 GitHub 對應資料夾使用 Add file → Upload files，上傳同名 JSON 並提交。其他改動也要各自提交；只 Fork 不會包含本機新地址。
+3. 不要上傳 .env、node_modules 或整個本機壓縮包。deployed.json 是公開地址與 ABI，可以提交。
+4. 登入 Vercel，新增 Project，匯入自己的 GitHub 副本，設定如下。
+
+| 設定 | 值 |
 |---|---|
-| 點檔案找不到 node | 安裝 Node.js 24，重開檔案總管／終端機 |
-| 安裝套件失敗 | 檢查網路與終端機錯誤，再執行 01-install.cmd |
-| 5173 被占用 | 關掉之前啟動的視窗，或在該視窗按 Ctrl+C |
-| Vercel 找不到 package.json | Root Directory 必須選 frontend |
-| Vercel 有畫面但無行情 API | 部署 frontend 原始碼，不能只上傳 dist |
-| stale price | 由有權限的 feeder 更新 Oracle；重新部署網站不會修復 |
-| 頁面有行情，買入卻用不同價格 | 網站行情 API 與鏈上 Oracle 是兩條獨立資料路徑 |
+| Framework | Vite |
+| Root Directory | frontend |
+| Install Command | npm ci |
+| Build Command | npm run build |
+| Output Directory | dist |
+| Node.js | 24.x |
 
-參考：[Vercel Vite](https://vercel.com/docs/frameworks/frontend/vite)、[CLI 部署](https://vercel.com/docs/cli/deploy)。
+按 Deploy，完成後打開網址。以後提交到連接的正式分支，Vercel 會依專案設定重新部署。
+
+### 方式 B：直接部署本機修改版
+
+在 frontend 資料夾開終端機：
+
+```powershell
+npx vercel
+```
+
+首次會提示安裝 CLI、登入與選擇專案；確認建立新專案或選擇自己的正確專案，使用目前 frontend 目錄。先檢查預覽網址，再執行：
+
+```powershell
+npx vercel --prod
+```
+
+這種方式會部署本機原始碼，但不會自動把改動備份到 GitHub。
+
+### Vercel 環境變數填什麼？
+
+| 變數 | 是否必填 | 用途 |
+|---|---|---|
+| VITE_RPC_URL | 否 | 不填使用程式預設公開 Sepolia RPC；填入的值會公開在瀏覽器 |
+| VITE_WC_PROJECT_ID | 否 | 自己的 WalletConnect project ID；先用 MetaMask 擴充套件可不填 |
+| ANTHROPIC_API_KEY | 否 | 選配 AI 評語，只放伺服器環境；沒有這個 key 仍可使用其他功能 |
+| PRIVATE_KEY | 不填 | 本教學的 Vercel 網站不需要部署者私鑰 |
+| ORACLE_ADDRESS | 不填 | 網站使用 frontend/src/deployed.json，不讀 feeder 的這個欄位 |
+
+所有 VITE_ 變數會進前端，不能放私鑰或伺服器 secret。修改建置環境變數後要重新部署。
+
+Vercel 會部署 frontend/api 的行情服務。不要只上傳 dist，否則會缺少 API。feeder／keeper 要留在自己的常駐電腦或另外的伺服器執行；本包沒有替它們建立雲端常駐服務。
+
+## 11. 完成檢查與常見問題
+
+完成檢查：本機網站能開啟；新合約地址已寫入兩份 JSON；feeder 交易成功；兩次 preflight 的寫入時間前進；測試買入有成功收據；Vercel 使用新的 JSON；正式網址刷新子頁不會 404；/api/twse 回傳 JSON（空物件代表行情當下不可用，不是有效報價）。
+
+| 問題 | 檢查／處理 |
+|---|---|
+| 找不到 package.json | 目前資料夾錯了。部署指令在 onchain，網站指令在 frontend |
+| 找不到 node | 安裝 Node.js 24，重開終端機 |
+| npm.ps1 不能執行 | 改用 npm.cmd；npx 同理改 npx.cmd |
+| invalid private key／invalid account | 檢查是否仍是佔位文字、公開地址、助記詞或有多餘字元，不要把內容貼出來 |
+| insufficient funds | 執行腳本的帳戶缺 Sepolia ETH；有 TWD 不能代替 gas |
+| Oracle: not feeder | 私鑰對應帳戶沒有這個 Oracle 的餵價權限；核對地址與部署者 |
+| stale price | 先確認 feeder 成功寫入「網站正在用的」Oracle |
+| RPC timeout／429 | 公開 RPC 可能限流；改用可用的 Sepolia RPC 後重啟腳本 |
+| 部署途中失敗 | 保留公開地址與錯誤，先排除原因；重跑會新建整套，不會自動續傳 |
+| 網站還在使用老師的合約 | 核對 frontend/src/deployed.json、重啟本機；線上版要提交新 JSON 並重新部署 |
+| 改 .env 沒生效 | 腳本在啟動時讀取，停止後重開；也檢查終端機既有環境變數是否覆蓋 .env |
+| keeper 沒有清算 | 可能沒有借款、健康因子未低於 1，或事件掃描未涵蓋；不能單憑沒有輸出認定全部安全 |
+
+## 12. 範圍與參考
+
+ZIP 包含完整程式、教學文件與範例設定；不含私鑰、實際 .env、node_modules 或 Git 歷史。安裝需要網路。
+
+這是測試網教學原型，沒有真實股票或銀行託管。已知程式限制見 [檢查報告](FINAL_REVIEW_1019.md)。上次安裝時依賴掃描回報 38 項弱點（25 moderate、13 high），未在這次文件更新中修復；掃描結果會隨資料庫變動。
+
+官方參考：[Vercel Vite](https://vercel.com/docs/frameworks/frontend/vite)、[Vercel CLI](https://vercel.com/docs/cli/deploy)。本手冊沒有代你執行部署、餵價或清算交易。
