@@ -29,6 +29,8 @@
 
 ## 下載完整網站資料包
 
+**只要照步驟做：[簡易操作說明](docs/ZIP_STEPS.md) · [簡易 PDF](docs/ZIP_STEPS.pdf)。解壓縮後也可開 ZIP-STEPS.html。**
+
 想做出同款完整網站並部署 Vercel？[下載完整 ZIP](https://github.com/112650024/RWA-WORKSHOP-1019/releases/download/student-kit-1019/RWA-WORKSHOP-1019-Full.zip)，解壓縮後先開 **START-HERE.html**。Windows 依序點 **01-install.cmd → 02-start.cmd → 03-build.cmd**；只需先安裝 Node.js 24。
 
 內含完整程式與課堂教材；[進階部署說明](docs/FULL_PACKAGE.md) 包含自己的合約、feeder 與 keeper 設定。Vercel 的 Root Directory 選 **frontend**。
