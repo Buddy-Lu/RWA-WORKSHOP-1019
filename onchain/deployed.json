@@ -4,7 +4,7 @@
   "explorer": "https://sepolia.etherscan.io",
   "contracts": {
     "twd": {
-      "address": "0x0ec97A83E96C7e61b4eDD6FB5Bf33ddEaF63df67",
+      "address": "0x8e5636a028dD2A98CF68F2F8Fa8A3476859c1761",
       "abi": [
         {
           "inputs": [
@@ -1057,7 +1057,7 @@
       ]
     },
     "oracle": {
-      "address": "0xF1198ab9A92E21E60bB90003eDEC0887aecf2871",
+      "address": "0xb22d1200E2b0DD9A653369F0dA9E9cb3Ed59e859",
       "abi": [
         {
           "inputs": [],
@@ -1261,7 +1261,7 @@
       ]
     },
     "factory": {
-      "address": "0xF262C1BFe36c5F458e1A178fD7D71C5C43AB8c44",
+      "address": "0x06D101d10B7c1272F30A557d52826C2a7C6803B7",
       "abi": [
         {
           "inputs": [
@@ -1445,7 +1445,7 @@
       ]
     },
     "lending": {
-      "address": "0xBebab317ec999ced702dE87C654868a9ede9ab82",
+      "address": "0x0BDe0d9cDf69Ff05628054080489dB44Baa469Ed",
       "abi": [
         {
           "inputs": [
@@ -2401,7 +2401,7 @@
       ]
     },
     "ipo": {
-      "address": "0x925BE0f709e4c9b38578142E9B94AFbb71aBB990",
+      "address": "0xdDCde35166cc87708dEA492B211ba71F50F14eDa",
       "abi": [
         {
           "inputs": [
@@ -3839,94 +3839,80 @@
       "code": "2330",
       "name": "Digitized TSMC",
       "tokenSymbol": "dTSMC",
-      "token": "0x1CB2Ea6f8eB47c24387B015C75D9d1dad800dc53"
+      "token": "0x048000D682F73e449a1d3EC493efb04Ec3F25921"
     },
     {
       "code": "2317",
       "name": "Digitized Hon Hai",
       "tokenSymbol": "dHHPG",
-      "token": "0x11ACeC6F4DeA546946Ae51F5b0bcc007D606a244"
+      "token": "0x0c7b278E4b473464fb9A456184E83d8f502Fe524"
     },
     {
       "code": "2454",
       "name": "Digitized MediaTek",
       "tokenSymbol": "dMTK",
-      "token": "0x8CA1c8EE36D85d15bA782fB647C0acD486fe282B"
+      "token": "0xd6910716E7A166EFdc22Cde9c99cAa85ACbf429A"
     },
     {
       "code": "2308",
       "name": "Digitized Delta",
       "tokenSymbol": "dDLT",
-      "token": "0x4971f44f9B78ee58d0937A77c6093a41D3B5c13d"
+      "token": "0x9F010937c0ee4B1732Ff4ABEEabBb180319E3a99"
     },
     {
       "code": "2303",
       "name": "Digitized UMC",
       "tokenSymbol": "dUMC",
-      "token": "0xFa2513Ae61a705D33B4c4A4ACbdfb8D0EbA0d567"
+      "token": "0xf19c8D9EB595BF80D73701bDeF6B084FAcB72484"
     },
     {
       "code": "2412",
       "name": "Digitized Chunghwa",
       "tokenSymbol": "dCHT",
-      "token": "0xc65AE0ab15e9CC1CbA12eC99fFed241E82EEb9E2"
+      "token": "0x4F17b866d228FB75146B6394865E5948E3c1418A"
     },
     {
       "code": "2882",
       "name": "Digitized Cathay FH",
       "tokenSymbol": "dCAT",
-      "token": "0xF7F47D514D24728Ea750BcDF3f26926F1bE549B7"
+      "token": "0xC67f059A88aa6d018ab61fEC60625483a6288256"
     },
     {
       "code": "2881",
       "name": "Digitized Fubon FH",
       "tokenSymbol": "dFBN",
-      "token": "0xdfD81e40f0aa2eDc8c3e9BBfcfebea61ceEFE1df"
+      "token": "0x6407176B17F47Be0253b3Ced6A2d2BBB03A5784b"
     },
     {
       "code": "2603",
       "name": "Digitized Evergreen",
       "tokenSymbol": "dEVG",
-      "token": "0x50705242ef00E1c9EA99652e0c3ecf5Ab878DAa8"
+      "token": "0xD0f1fcAf31f79AEee3A670196177daF0D176576A"
     },
     {
       "code": "3008",
       "name": "Digitized Largan",
       "tokenSymbol": "dLAR",
-      "token": "0x48aA7B3507B272a5C28C9Bb3938290d6872d45Bc"
+      "token": "0xF675a087B56851dD0efe9768ad9aBCf2F4D91677"
     },
     {
       "code": "0050",
       "name": "Digitized Yuanta50",
       "tokenSymbol": "d0050",
-      "token": "0x3A533Bd5E69aeC180029225d58011Ba599ef42f0"
+      "token": "0xE2573Aea46b447048878140a5af8D3F6040F51E7"
     },
     {
       "code": "2891",
       "name": "Digitized CTBC FH",
       "tokenSymbol": "dCTBC",
-      "token": "0x4CF9C310A725ED8138f6eA5674C1Eb72bf3E8BF5"
+      "token": "0xE6cED40C202C9CC12FA64f76b97e9C1c03131724"
     }
   ],
   "ipoOfferings": [
     {
       "id": 0,
       "code": "0050",
-      "token": "0x3A533Bd5E69aeC180029225d58011Ba599ef42f0"
+      "token": "0xE2573Aea46b447048878140a5af8D3F6040F51E7"
     }
-  ],
-  "uniswap": {
-    "factory": "0x0227628f3F023bb0B980b67D528571c95c6DaC1c",
-    "npm": "0x1238536071E1c677A632429e3655c799b22cDA52",
-    "router": "0x3bFA4769FB09eefC5a80d6E87c3B9C650f7Ae48E",
-    "quoter": "0xEd1f6473345F45b75F8179591dd5bA1888cf2FB3",
-    "pool": "0xe69aF036F8290Ed0371f79dE8E1060211e9f5353",
-    "token0": "0x0ec97A83E96C7e61b4eDD6FB5Bf33ddEaF63df67",
-    "token1": "0x1CB2Ea6f8eB47c24387B015C75D9d1dad800dc53",
-    "fee": 3000,
-    "twd": "0x0ec97A83E96C7e61b4eDD6FB5Bf33ddEaF63df67",
-    "stockToken": "0x1CB2Ea6f8eB47c24387B015C75D9d1dad800dc53",
-    "stockCode": "2330",
-    "stockSymbol": "dTSMC"
-  }
+  ]
 }
