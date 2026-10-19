@@ -103,7 +103,7 @@ node workshop/frontend/serve.mjs
 | `stale price` | 通知講師更新 Oracle；重整前端不會更新鏈上價格 |
 | `insufficient reserve` | 停下檢查儲備；不要一直重送交易 |
 | 授權成功但買入失敗 | approve 是另一筆交易，額度可能仍存在；查原因再操作 |
-| 完整網站沒有行情 | Vite 不包含 Vercel `/api`；先使用精簡前端 |
+| 完整網站沒有行情 | 本機已有 API 外掛；查 `/api/twse` 回應、外部行情來源與網路。精簡前端價格則來自鏈上 Oracle |
 | Node 指令無法辨識 | 安裝 Node.js 後重開終端機 |
 
 參考：[Remix 部署文件](https://remix-ide.readthedocs.io/en/latest/run.html)、[MetaMask 安裝文件](https://support.metamask.io/start/getting-started-with-metamask/)。

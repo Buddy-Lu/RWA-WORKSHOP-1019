@@ -72,7 +72,7 @@ export default function Dashboard() {
             24/7 鏈上金融
           </h1>
           <p className="mt-4 max-w-md text-muted-foreground">
-            受監管 TWD 穩定幣兌換台股代幣,質押借貸、參與 IPO 認購 —— 預言機即時報價、鏈上 1:1 實股擔保、全程可查驗。
+            使用測試 TWD 體驗台股代幣、質押借貸與模擬 IPO；依鏈上預言機定價，未串接真實股票託管。
           </p>
           <div className="mt-6 flex gap-3">
             <Link

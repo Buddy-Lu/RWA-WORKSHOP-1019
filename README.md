@@ -6,6 +6,8 @@
 
 ## 上課先開這裡
 
+**10/19 更新：** [最終測試前檢查](docs/FINAL_REVIEW_1019.md) 發現既有 Sepolia 價格已過期，請先處理餵價再測鑄贖。另附 [預言機與平台原理速讀](docs/ORACLE_EXPLAINED.md)。Canva 已清理為41頁（含活動介紹）。
+
 | 我想做什麼 | 入口 |
 |---|---|
 | 跟著老師一步一步操作 | [學生操作手冊](docs/STUDENT_LABS.md) |
@@ -61,7 +63,7 @@ npm ci
 npm test
 ```
 
-上述兩段均從儲存庫根目錄開始。完整 React 前端的 `/api` 由 Vercel serverless 提供，單獨 `npm run dev` 不會啟動該 API；完整行情和 AI 評語請用 Vercel 環境，合約操作另依 RPC 與測試網狀態。課堂先用精簡前端完成合約讀寫。
+上述兩段均從儲存庫根目錄開始。`vite.config.ts` 已有本機 API 外掛，`npm run dev` 支援 `/api/twse`、`/api/history` 與 `/api/valuation`；行情仍依外部 API 是否可用。AI 評語另外需要伺服器程序的 `ANTHROPIC_API_KEY`，未提供時會回空結果。課堂先用精簡前端完成合約讀寫。
 
 ## 程式結構
 

@@ -76,7 +76,7 @@ export default function Trade() {
       <PageHeader
         icon={ArrowLeftRight}
         title="交易台股代幣"
-        desc="以 TWD 穩定幣依預言機即時價兌換台股代幣,鏈上 1:1 實股擔保、免手續費。"
+        desc="以測試 TWD 依鏈上預言機價格鑄造／贖回教學代幣；未串接實股託管，交易仍需 gas。"
       />
       <div className="grid gap-4 lg:grid-cols-[1fr_380px]">
         <div className="glass rounded-2xl p-5">
@@ -136,7 +136,7 @@ export default function Trade() {
             </div>
             <div className="flex justify-between">
               <span>手續費</span>
-              <span className="font-mono-num text-primary">鏈上免手續費</span>
+              <span className="font-mono-num text-primary">無額外平台費；另需 gas</span>
             </div>
             <div className="mt-1 flex justify-between border-t border-border pt-2 text-base font-bold">
               <span className="text-foreground">{side === "buy" ? "需付" : "可得"}</span>
@@ -196,7 +196,7 @@ export default function Trade() {
             </div>
           </div>
           <p className="mt-4 text-[11px] text-muted-foreground">
-            數據直接讀自 Sepolia 鏈上 {stock.symbol} 合約,證明代幣由 TWD 儲備足額擔保。
+            數據直接讀自 Sepolia 鏈上 {stock.symbol} 合約,顯示合約記帳儲備；是否足額須依目前價格與供給判斷，不代表實股或銀行資產證明。
           </p>
         </div>
       </div>

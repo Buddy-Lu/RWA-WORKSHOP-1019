@@ -3,7 +3,7 @@
 ## 上課前一天
 
 - 開 [學生手冊](STUDENT_LABS.md)，在新資料夾下載教材，完整走一次 Remix 發幣、轉帳與精簡前端。
-- 教室投影使用目前 Canva 副本；對照 [頁碼表](SLIDE_CODE_MAP.md)，跳過保留的 9 頁舊內容。講稿已按 40 頁教學順序安排。
+- 教室投影使用目前 Canva 副本；對照 [頁碼表](SLIDE_CODE_MAP.md)，目前共 41 頁，保留第 3 頁活動介紹；其餘 40 頁主課已清除舊交易所操作。講稿括號為更新後 Canva 頁碼。
 - 準備測試錢包和少量 Sepolia ETH。不要投影助記詞、私鑰或 `.env`。
 - 對 `onchain/deployed.json` 的地址確認鏈別、合約 code、管理者權限、pause 狀態、Oracle 價格時效、測試 TWD 與儲備。檔案本身只證明曾保存這組地址。
 - 若換了部署，執行 `node scripts/sync-workshop-config.mjs`；同步後精簡前端仍是 Sepolia 專用。
@@ -54,7 +54,7 @@ node scripts/sync-workshop-config.mjs
 ## 教室三個終端機
 
 1. 學生操作：根目錄 `node workshop/frontend/serve.mjs`，瀏覽 `http://127.0.0.1:4173`。
-2. 完整應用展示：`frontend` 內 `npm run dev`。Vite 本機不啟動 Vercel `/api`，完整行情／AI 評語依 Vercel 執行環境。
+2. 完整應用展示：`frontend` 內 `npm run dev`。Vite 的本機外掛已支援三個 `/api` 路徑；行情需要外部網路，AI 評語需要在伺服器程序設定環境變數。
 3. 如需即時餵價：`onchain` 內 `npm run feed:sepolia`。只有講師執行，不請學生輸入講師私鑰。
 
 要結束本機服務，在該終端機按 Ctrl+C。不要關閉正在等待錢包確認的視窗後又重送同樣操作。

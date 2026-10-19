@@ -6,7 +6,7 @@ pragma solidity ^0.8.24;
  * @notice 台股價格預言機(可信餵價者模式):授權的 feeder 把鏈下真實股價寫上鏈。
  *         以 bytes32 股票代號為 key(例如 "2330")。價格以整數 + decimals 表示
  *         (例如 2355.00 → price=235500, decimals=2)。
- *         提供 Chainlink AggregatorV3 風格的 latestPrice,未來可無痛替換為去中心化預言機。
+ *         使用自訂 latestPrice(bytes32) 介面，並非 Chainlink AggregatorV3Interface；改接 Chainlink 需轉接合約或修改依賴。
  */
 contract PriceOracle {
     struct Round {
