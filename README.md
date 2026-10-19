@@ -27,6 +27,12 @@
 
 全程使用測試資產。助記詞與私鑰由你自己保存，不交給老師或同學。沒有測試 ETH 時，先依老師指示用 Remix VM；VM 的代幣不會出現在 Sepolia。
 
+## 下載完整網站資料包
+
+想做出同款完整網站並部署 Vercel？[下載完整 ZIP](https://github.com/112650024/RWA-WORKSHOP-1019/releases/download/student-kit-1019/RWA-WORKSHOP-1019-Full.zip)，解壓縮後先開 **START-HERE.html**。Windows 依序點 **01-install.cmd → 02-start.cmd → 03-build.cmd**；只需先安裝 Node.js 24。
+
+內含完整程式與課堂教材；[進階部署說明](docs/FULL_PACKAGE.md) 包含自己的合約、feeder 與 keeper 設定。Vercel 的 Root Directory 選 **frontend**。
+
 ## 常用入口
 
 [完整發幣程式](workshop/contracts/ClassToken.sol) · [下載教材 ZIP](https://github.com/112650024/RWA-WORKSHOP-1019/archive/refs/heads/main.zip) · [操作卡住了？](workshop/steps/faq.md)

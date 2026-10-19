@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-Hant"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RWA Workshop｜完整網站啟動指南</title>
+<style>body{margin:0;background:#101010;color:#eee;font:17px/1.8 system-ui,sans-serif}main{max-width:850px;margin:auto;padding:55px 24px}h1{font-size:40px;line-height:1.3}h2{margin-top:45px}a{color:#a8d5ff}code{background:#292929;padding:3px 7px;border-radius:5px}section{border-top:1px solid #444;margin-top:30px}li{margin:12px 0}small{color:#bbb}.note{background:#242424;padding:18px 22px;border-radius:12px}table{border-collapse:collapse;width:100%}td,th{text-align:left;padding:12px;border-bottom:1px solid #444}</style>
+<main><small>RWA WORKSHOP 1019 · 完整原始碼資料包</small>
+<h1>把台股代幣平台<br>變成你自己的作品。</h1>
+<p>先解壓縮 ZIP，接著完成下面三步。這裡啟動的是完整 React 網站，與課堂的精簡操作網頁不同。</p>
+<div class="note">本包附公開 Sepolia 合約地址，能建立同款介面與連線方式；不會複製老師的錢包、餘額或管理權限。買賣仍取決於鏈上價格與儲備。網站上線不代表 feeder、keeper 已啟動。</div>
+<section><h2>01 安裝一次</h2><ol>
+<li>安裝 <a href="https://nodejs.org/en/download">Node.js 24 LTS</a>，保留 npm 安裝選項。</li>
+<li>完整解壓縮，把整個資料夾放在自己的電腦；不要在 ZIP 預覽視窗裡執行。</li>
+<li>Windows：雙擊 <strong>01-install.cmd</strong>。等待出現 <code>Ready</code>。第一次需網路下載套件，可能花數分鐘；失敗請保留錯誤訊息。</li>
+</ol><p>這一步只安裝網站依賴，不需要填私鑰。</p></section>
+<section><h2>02 打開完整網站</h2><p>雙擊 <strong>02-start.cmd</strong>，瀏覽器會開啟 <a href="http://127.0.0.1:5173">http://127.0.0.1:5173</a>。保留黑色終端機視窗，結束時按 Ctrl+C。</p>
+<p>先看各頁面，再連接 MetaMask，網路選 Sepolia。需要送交易時才使用測試 ETH。出現 stale price 或交易失敗，先依課程指示確認鏈上狀態，重開網站不會更新 Oracle。</p>
+<p>用 VS Code 開啟整個資料夾，修改 <code>frontend/src/routes/</code> 的頁面，存檔後瀏覽器會更新。</p>
+<p>macOS／Linux：在資料夾開終端機，依序執行：<br><code>node scripts/student-start.cjs install</code><br><code>node scripts/student-start.cjs start</code></p></section>
+<section><h2>03 建置，再部署 Vercel</h2><p>先雙擊 <strong>03-build.cmd</strong>，確認出現 <code>Build passed</code>。</p>
+<ol><li>在 <a href="https://github.com/112650024/RWA-WORKSHOP-1019">課程 GitHub</a> 按 Fork 建立自己的副本。若有修改，先把改動提交到自己的副本；只在本機修改不會自動上傳。</li>
+<li>登入 <a href="https://vercel.com/new">Vercel</a>，匯入你自己的 GitHub 儲存庫。</li>
+<li>部署設定如下，確認 Root Directory 是 <strong>frontend</strong> 後再按 Deploy。</li></ol>
+<table><tr><th>設定</th><th>填入</th></tr><tr><td>Framework Preset</td><td>Vite</td></tr><tr><td>Root Directory</td><td>frontend</td></tr><tr><td>Install Command</td><td>npm ci</td></tr><tr><td>Build Command</td><td>npm run build</td></tr><tr><td>Output Directory</td><td>dist</td></tr><tr><td>Node.js Version</td><td>24.x</td></tr></table>
+<p>部署的是整份 <code>frontend</code> 原始碼，包含 <code>api/</code>。只上傳 dist 會缺少行情 API。</p>
+<p>想直接上傳本機修改版：在 <code>frontend</code> 資料夾的終端機執行 <code>npx vercel</code>，依提示登入並建立預覽。確認預覽後執行 <code>npx vercel --prod</code>。首次執行會提示安裝 CLI。</p>
+<p>基本頁面與瀏覽器錢包不必填 API key。選配：<code>VITE_WC_PROJECT_ID</code> 用自己的 WalletConnect project ID；<code>VITE_RPC_URL</code> 是會公開在瀏覽器的 RPC URL。AI 評語使用 <code>ANTHROPIC_API_KEY</code>，只能放 Vercel 伺服器環境變數，不加 VITE_。沒有 AI key 時其他功能仍可用。</p>
+<p>上線後檢查：首頁能開啟、進入交易頁後重新整理不會 404、<code>/api/twse</code> 回 JSON。空物件表示行情來源當下不可用；不代表有最新報價。另確認錢包是 Sepolia。</p>
+<small>官方參考：<a href="https://vercel.com/docs/frameworks/frontend/vite">Vite on Vercel</a> · <a href="https://vercel.com/docs/cli/deploy">Vercel CLI deploy</a></small></section>
+<section><h2>接下來，程式改哪裡？</h2><table>
+<tr><th>想做什麼</th><th>檔案</th></tr><tr><td>改完整網站畫面</td><td>frontend/src/routes/</td></tr><tr><td>抓 TWSE 給網站顯示</td><td>frontend/api/twse.js</td></tr><tr><td>批次建立台股合約</td><td>onchain/scripts/deploy.js</td></tr><tr><td>抓 TWSE 並寫價格上鏈</td><td>onchain/scripts/feeder.js</td></tr><tr><td>監控借款與清算</td><td>onchain/scripts/keeper.js</td></tr><tr><td>修改智能合約</td><td>onchain/contracts/</td></tr></table>
+<p>獨立部署自己的合約、feeder 與 keeper，請讀 <code>docs/FULL_PACKAGE.md</code> 的進階步驟。這些常駐 Node.js 程式要在自己的電腦或伺服器另外執行，不會隨網站部署自動啟動。</p>
+<p>本包保留完整原始碼、課堂教材與已知問題報告。它是測試網教學原型，沒有實股託管；已知限制見 <code>docs/FINAL_REVIEW_1019.md</code>。</p></section></main></html>
